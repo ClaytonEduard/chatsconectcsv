@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="utf-8">
@@ -15,8 +15,8 @@
         .chartMenu {
             width: 100vw;
             height: 40px;
-            background: #1A1A1A;
-            color: rgba(255, 26, 104, 1);
+            background: #b3b3b377;
+            color: rgb(3, 3, 3);
         }
 
         .chartMenu p {
@@ -27,7 +27,7 @@
         .chartCard {
             width: 100vw;
             height: calc(100vh - 40px);
-            background: rgba(255, 26, 104, 0.2);
+            background: rgba(26, 60, 255, 0.658);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -37,7 +37,7 @@
             width: 700px;
             padding: 20px;
             border-radius: 20px;
-            border: solid 3px rgba(255, 26, 104, 1);
+            border: solid 3px rgb(3, 3, 3);
             background: white;
         }
     </style>
@@ -45,7 +45,7 @@
 
 <body>
     <div class="chartMenu">
-        <p>WWW.CHARTJS3.COM (Chart JS 3.7.1)</p>
+        <p>Graficos com conexão CSV</p>
     </div>
     <div class="chartCard">
         <div class="chartBox">
@@ -62,6 +62,9 @@ cost,profit,revenue
 22,33,4
 
 </textarea>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.4/d3.min.js"
+        integrity="sha512-hnFpvCiJ8Fr1lYLqcw6wLgFUOEZ89kWCkO+cEekwcWPIPKyknKV1eZmSSG3UxXfsSuf+z/SgmiYB1zFOg3l2UQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
         integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ=="
@@ -69,73 +72,94 @@ cost,profit,revenue
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"
         integrity="sha512-SGWgwwRA8xZgEoKiex3UubkSkV1zSE1BS6O4pXcaxcNtUlQsOmOmhVnDwIvqGRfEmuz83tIGL13cXMZn6upPyg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-
-        const csvData = document.getElementById('csvData').value;
-
-        const dataFile = Papa.parse(csvData, {
-            header: true,
-            skipEmptyLines: true,
-        });
-
-        const cost = [];
-        const profit = [];
-        const revenue = [];
-        for (let i = 0; i < dataFile.data.length; i++) {
-            cost.push(dataFile.data[i].cost);
-            profit.push(dataFile.data[i].profit);
-            revenue.push(dataFile.data[i].revenue);
-        };
-        console.log(cost);
-    </script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // setup 
-        const data = {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            datasets: [{
-                label: 'Weekly Sales',
-                data: profit,
-                backgroundColor: [
-                    'rgba(255, 26, 104, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(0, 0, 0, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 26, 104, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(0, 0, 0, 1)'
-                ],
-                borderWidth: 1
-            }]
-        };
 
-        // config 
-        const config = {
-            type: 'bar',
-            data,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+        /*  const csvData = document.getElementById('csvData').value;
+         const dataFile = Papa.parse(csvData, {
+             header: true,
+             skipEmptyLines: true,
+         });
+         const cost = [];
+         const profit = [];
+         const revenue = [];
+         for (let i = 0; i < dataFile.data.length; i++) {
+             cost.push(dataFile.data[i].cost);
+             profit.push(dataFile.data[i].profit);
+             revenue.push(dataFile.data[i].revenue);
+         };
+         console.log(cost); */
+        // "C:\Users\Clayt\OneDrive\Área de Trabalho\dados.csv"
+        // para salvar no loca host
+
+        const chartData = 'http://localhost/chatsconectcsv/dados.csv';
+        //const chartData = "C:\Users\Clayt\OneDrive\Área de Trabalho\dados.csv";
+        d3.csv(chartData).then(function (datapoints) {
+            const cost = [];
+            const profit = [];
+            const revenue = [];
+            for (i = 0; i < datapoints.length; i++) {
+                cost.push(dataFile.data[i].cost);
+                profit.push(dataFile.data[i].profit);
+                revenue.push(dataFile.data[i].revenue);
+            }
+
+            // setup 
+            const data = {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: datapoints.columns[0],
+                    data: cost,
+                    backgroundColor: 'rgba(255, 26, 104, 0.2)',
+                    borderColor: 'rgba(255, 26, 104, 1)',
+                    borderWidth: 1
+                }, {
+                    label: datapoints.columns[1],
+                    data: profit,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: datapoints.columns[2],
+                    data: revenue,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            // config 
+            const config = {
+                type: 'bar',
+                data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        // render init block
-        const myChart = new Chart(
-            document.getElementById('myChart'),
-            config
-        );
+            // render init block
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+
+
+
+
+        })
+
+
+
+
+    </script>
+
+
+    <script>
+
     </script>
 
 </body>
